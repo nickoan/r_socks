@@ -1,0 +1,23 @@
+PATH
+  remote: .
+  specs:
+    r_socks (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    eventmachine (1.2.7)
+    minitest (5.14.0)
+    rake (12.3.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  eventmachine (~> 1.2, >= 1.2.7)
+  minitest (~> 5.0)
+  r_socks!
+  rake (~> 12.0)
+
+BUNDLED WITH
+   2.1.4
