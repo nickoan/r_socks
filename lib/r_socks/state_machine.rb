@@ -1,13 +1,13 @@
 module RSocks
 
-  STATE_LIST = [:handshake, :auth, :start]
+  STATE_LIST = [:handshake, :auth, :connect, :start]
 
   class StateMachine
 
     attr_reader :current_state
 
     def initialize
-      @max = 2
+      @max = 3
       @state_num = 0
       @current_state = RSocks::STATE_LIST[@state_num]
     end
@@ -20,8 +20,12 @@ module RSocks
       current_state == :auth
     end
 
+    def connect?
+      current_state == :connect
+    end
+
     def start?
-      current_state == :start?
+      current_state == :start
     end
 
     def auth!
@@ -29,8 +33,13 @@ module RSocks
       @current_state = RSocks::STATE_LIST[@state_num]
     end
 
-    def start!
+    def connect!
       @state_num = 2
+      @current_state = RSocks::STATE_LIST[@state_num]
+    end
+
+    def start!
+      @state_num = 3
       @current_state = RSocks::STATE_LIST[@state_num]
     end
 
