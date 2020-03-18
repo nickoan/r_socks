@@ -2,6 +2,7 @@ require 'socket'
 require 'eventmachine'
 require 'socket'
 require './r_socks/state_machine'
+require 'ipaddr'
 
 module RSocks
 
@@ -126,9 +127,8 @@ module RSocks
         type = RSocks::ADDR_IPV4
         address, port = parse_address_port(data[2..-1], 4, type)
       elsif addr_type == RSocks::ADDR_IPV6
-        raise RSocks::NotSupport
-        # type = RSocks::ADDR_IPV6
-        # address, port = parse_address_port(data[2..-1], 16, type)
+        type = RSocks::ADDR_IPV6
+        address, port = parse_address_port(data[2..-1], 16, type)
       elsif addr_type == RSocks::ADDR_DOMAIN
         type = RSocks::ADDR_DOMAIN
         padding = data[2].unpack('C')[0]
@@ -156,7 +156,7 @@ module RSocks
       addr_str = if type == RSocks::ADDR_DOMAIN
                    address
                  else
-                   address.unpack('C' * padding).join('.')
+                   IPAddr.ntop(address)
                  end
 
       [addr_str, port]
