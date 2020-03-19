@@ -5,6 +5,7 @@ module RSocks
   PASSWORD_LOGIN = 0x02
   NO_AUTH = 0x00
 
+  AUTH_HEADER = 0x01
 
   KEEP_ONE_BIT = 0x00
 
@@ -19,4 +20,7 @@ module RSocks
 
   CONNECT_FAIL = 0x01
   CONNECT_SUCCESS = 0x00
+
+  SUCCESS_RESPONSE = [AUTH_HEADER, 0x00].pack('CC')
+  FAILED_RESPONSE = [AUTH_HEADER, 0x01].pack('CC')
 end

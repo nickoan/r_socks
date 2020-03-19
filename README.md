@@ -22,6 +22,17 @@ Or install it yourself as:
 
 ## Usage
 
+#### use ENV set auth username and password
+
+by default both user and password is: `default`
+
+```
+export RSOCKS_USER=some_user_name
+export RSOCKS_PASSWORD=some_password
+```
+
+
+
 ```ruby
 RSocks::TcpServer.new('127.0.0.1', 8081).run!
 ```

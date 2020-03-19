@@ -6,6 +6,7 @@ require './r_socks/errors'
 require './r_socks/socks5_bit_codes'
 require './r_socks/state_machine'
 require './r_socks/target_connection_handler'
+require './r_socks/authenticator'
 
 module RSocks
 
@@ -16,6 +17,7 @@ module RSocks
       @state_machine = RSocks::StateMachine.new
       @original_addr = nil
       @original_port = nil
+      @authenticator = RSocks::Authenticator.new
     end
     # sample \x05\x01\x00\x03\ngoogle.com\x00P
 
@@ -25,7 +27,15 @@ module RSocks
       end
 
       if @state_machine.auth?
-        #working on
+        passed = @authenticator.auth!(data)
+        if passed
+          send_data(RSocks::SUCCESS_RESPONSE)
+          @state_machine.connect!
+          return
+        end
+
+        send_data(RSocks::FAILED_RESPONSE)
+        return
       end
 
       if @state_machine.connect?
