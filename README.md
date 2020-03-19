@@ -32,9 +32,16 @@ export RSOCKS_PASSWORD=some_password
 ```
 
 
+run server
 
 ```ruby
-RSocks::TcpServer.new('127.0.0.1', 8081).run!
+require 'r_socks'
+
+server = RSocks::TcpServer.new('127.0.0.1', 8081)
+
+server.config.auth_method = :password
+
+server.run!
 ```
 
 

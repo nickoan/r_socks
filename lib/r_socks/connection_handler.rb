@@ -11,13 +11,19 @@ require './r_socks/authenticator'
 module RSocks
 
   class ConnectionHandler < EM::Connection
-    def post_init
-      @port, @ip = Socket.unpack_sockaddr_in(get_peername)
-      puts "new #{@ip}:#{@port} connected."
+
+    def initialize(config, *args)
+      super(*args)
       @state_machine = RSocks::StateMachine.new
       @original_addr = nil
       @original_port = nil
-      @authenticator = RSocks::Authenticator.new
+      @authenticator = RSocks::Authenticator.new(config.auth_adaptor)
+      @config = config
+    end
+
+    def post_init
+      @port, @ip = Socket.unpack_sockaddr_in(get_peername)
+      puts "new #{@ip}:#{@port} connected."
     end
     # sample \x05\x01\x00\x03\ngoogle.com\x00P
 
@@ -73,14 +79,17 @@ module RSocks
 
       data = nil
 
-      if methods.include?(PASSWORD_LOGIN)
-        @state_machine.auth!
-        data = [RSocks::VERSION, PASSWORD_LOGIN].pack('CC')
-      end
+      auth_method = @config.auth_method || RSocks::NO_AUTH
 
-      if methods.include?(NO_AUTH)
-        @state_machine.connect!
-        data = [RSocks::VERSION, NO_AUTH].pack('CC')
+      if methods.include?(auth_method)
+
+        if auth_method == RSocks::NO_AUTH
+          @state_machine.connect!
+        elsif auth_method == RSocks::PASSWORD_LOGIN
+          @state_machine.auth!
+        end
+
+        data = [RSocks::VERSION, auth_method].pack('CC')
       end
 
       if data.nil?
