@@ -2,6 +2,7 @@ require 'socket'
 require 'eventmachine'
 require 'socket'
 require './r_socks/state_machine'
+require './r_socks/target_connection_handler'
 require 'ipaddr'
 
 module RSocks
@@ -40,7 +41,6 @@ module RSocks
     # sample \x05\x01\x00\x03\ngoogle.com\x00P
 
     def receive_data(data)
-      p data
       if @state_machine.handshake?
         return init_handshake(data)
       end
@@ -50,15 +50,21 @@ module RSocks
       end
 
       if @state_machine.connect?
-        return connect_request(data)
+        connect_request(data)
+        @target = EventMachine.attach(@current_socket, RSocks::TargetConnectionHandler)
+        @target.source_io = self
+        return
       end
 
       return send_data(not_accept) unless @state_machine.start?
-      # working on
+      @target.send_data(data)
     end
 
     def unbind
       puts "#{@ip}:#{@port} had disconnected."
+      if @current_socket && !@current_socket.closed?
+        @current_socket.close
+      end
     end
 
     private
