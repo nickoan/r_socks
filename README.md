@@ -22,7 +22,10 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+RSocks::TcpServer.new('127.0.0.1', 8081).run!
+```
+
 
 ## Development
 
@@ -32,5 +35,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/r_socks.
+Bug reports and pull requests are welcome on GitHub at https://github.com/nickoan/r_socks.
 

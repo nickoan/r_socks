@@ -6,8 +6,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Nick An"]
   spec.email         = ["anning0322@gmail.com"]
 
-  spec.summary       = %q{shadow socks server}
-  spec.description   = %q{ruby shadow socks server gem}
+  spec.summary       = %q{socks5 proxy server}
+  spec.description   = %q{ruby proxy socks5 shadowsocks}
   spec.homepage      = "https://github.com/nickoan/r_socks"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
