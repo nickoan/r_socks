@@ -1,6 +1,6 @@
 require 'eventmachine'
-require './r_socks/connection_handler'
-require './r_socks/config'
+require 'r_socks/connection_handler'
+require 'r_socks/config'
 
 module RSocks
   class TcpServer

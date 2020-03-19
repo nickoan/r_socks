@@ -2,11 +2,11 @@ require 'socket'
 require 'eventmachine'
 require 'socket'
 require 'ipaddr'
-require './r_socks/errors'
-require './r_socks/socks5_bit_codes'
-require './r_socks/state_machine'
-require './r_socks/target_connection_handler'
-require './r_socks/authenticator'
+require 'r_socks/errors'
+require 'r_socks/socks5_bit_codes'
+require 'r_socks/state_machine'
+require 'r_socks/target_connection_handler'
+require 'r_socks/authenticator'
 
 module RSocks
 
