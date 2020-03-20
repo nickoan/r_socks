@@ -28,31 +28,41 @@ module RSocks
     # sample \x05\x01\x00\x03\ngoogle.com\x00P
 
     def receive_data(data)
-      if @state_machine.handshake?
-        return init_handshake(data)
-      end
 
-      if @state_machine.auth?
-        passed = @authenticator.auth!(data)
-        if passed
-          send_data(RSocks::SUCCESS_RESPONSE)
-          @state_machine.connect!
+      return send_data(not_accept) if data.nil? || data == ''
+
+      begin
+
+        if @state_machine.handshake?
+          return init_handshake(data)
+        end
+
+        if @state_machine.auth?
+          passed = @authenticator.auth!(data)
+          if passed
+            send_data(RSocks::SUCCESS_RESPONSE)
+            @state_machine.connect!
+            return
+          end
+
+          send_data(RSocks::FAILED_RESPONSE)
           return
         end
 
-        send_data(RSocks::FAILED_RESPONSE)
-        return
-      end
+        if @state_machine.connect?
+          connect_request(data)
+          @target = EventMachine.attach(@current_socket, RSocks::TargetConnectionHandler)
+          @target.source_io = self
+          return
+        end
 
-      if @state_machine.connect?
-        connect_request(data)
-        @target = EventMachine.attach(@current_socket, RSocks::TargetConnectionHandler)
-        @target.source_io = self
-        return
-      end
+        return send_data(not_accept) unless @state_machine.start?
+        @target.send_data(data)
 
-      return send_data(not_accept) unless @state_machine.start?
-      @target.send_data(data)
+      rescue => error
+        puts error.message
+        puts error.backtrace
+      end
     end
 
     def unbind
