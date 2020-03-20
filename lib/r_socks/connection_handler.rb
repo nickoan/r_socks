@@ -23,7 +23,6 @@ module RSocks
 
     def post_init
       @port, @ip = Socket.unpack_sockaddr_in(get_peername)
-      puts "new #{@ip}:#{@port} connected."
     end
     # sample \x05\x01\x00\x03\ngoogle.com\x00P
 
@@ -60,13 +59,12 @@ module RSocks
         @target.send_data(data)
 
       rescue => error
-        puts error.message
+        put "Error at #{@ip}:#{@port}, message: #{data}, error: #{error.message}"
         puts error.backtrace
       end
     end
 
     def unbind
-      puts "#{@ip}:#{@port} had disconnected."
       if @current_socket && !@current_socket.closed?
         @current_socket.close
       end
