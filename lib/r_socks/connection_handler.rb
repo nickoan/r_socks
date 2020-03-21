@@ -59,7 +59,7 @@ module RSocks
         @target.send_data(data)
 
       rescue => error
-        put "Error at #{@ip}:#{@port}, message: #{data}, error: #{error.message}"
+        puts "Error at #{@ip}:#{@port}, message: #{data}, error: #{error.message}"
         puts error.backtrace
       end
     end
