@@ -33,8 +33,6 @@ module RSocks
 
     def receive_data(data)
 
-      p data
-
       return send_data(not_accept) if data.nil? || data == ''
 
       begin
@@ -63,7 +61,7 @@ module RSocks
         return send_data(not_accept) unless @state_machine.start?
 
         if @target.nil?
-          @target = EventMachine.connect(@addr, @port, RSocks::TargetConnectionHandler, self, data)
+          @target = EventMachine.connect(@addr, @port, RSocks::TargetConnectionHandler, self)
         end
 
         @target.send_data(data)

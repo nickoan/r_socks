@@ -7,20 +7,8 @@ module RSocks
       @client = client
     end
 
-    def post_init
-      EM::enable_proxy(self, @client)
-    end
-
-    def connection_completed
-      close_connection_after_writing
-    end
-
     def receive_data(data)
       @client.send_data(data)
-    end
-
-    def proxy_target_unbound
-      close_connection
     end
 
     def unbind
