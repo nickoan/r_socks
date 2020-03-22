@@ -22,7 +22,12 @@ module RSocks
     end
 
     def post_init
-      @port, @ip = Socket.unpack_sockaddr_in(get_peername)
+      begin
+        @port, @ip = Socket.unpack_sockaddr_in(get_peername)
+      rescue => e
+        puts "post_init error: #{e.message}"
+        close_connection
+      end
     end
     # sample \x05\x01\x00\x03\ngoogle.com\x00P
 
