@@ -72,7 +72,7 @@ module RSocks
     end
 
     def unbind
-      @target.close_connection
+      @target.close_connection if @target
     end
 
     private
