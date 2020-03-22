@@ -33,6 +33,8 @@ module RSocks
 
     def receive_data(data)
 
+      p data
+
       return send_data(not_accept) if data.nil? || data == ''
 
       begin
@@ -55,14 +57,16 @@ module RSocks
 
         if @state_machine.connect?
           connect_request(data)
-          @target = EventMachine.attach(@current_socket, RSocks::TargetConnectionHandler)
-          @target.source_io = self
           return
         end
 
         return send_data(not_accept) unless @state_machine.start?
-        @target.send_data(data)
 
+        if @target.nil?
+          @target = EventMachine.connect(addr, port, self, data)
+        end
+
+        @target.send_data(data)
       rescue => error
         puts "Error at #{@ip}:#{@port}, message: #{data}, error: #{error.message}"
         puts error.backtrace
@@ -70,9 +74,7 @@ module RSocks
     end
 
     def unbind
-      if @current_socket && !@current_socket.closed?
-        @current_socket.close
-      end
+      @target.close_connection
     end
 
     private
@@ -118,8 +120,7 @@ module RSocks
       return not_accept if version != RSocks::VERSION
 
       begin
-        addr, port, type = check_sock_cmd(cmd, data[2..-1])
-        @current_socket = TCPSocket.new(addr, port)
+        @addr, @port, @type = check_sock_cmd(cmd, data[2..-1])
       rescue
         send_data([RSocks::VERSION,RSocks::CONNECT_FAIL].pack('CC'))
         return close_connection
@@ -128,7 +129,7 @@ module RSocks
       @state_machine.start!
 
       send_data([RSocks::VERSION, RSocks::CONNECT_SUCCESS].
-        pack('CC') + pack_address_and_port_info(type))
+        pack('CC') + pack_address_and_port_info(@type))
     end
 
     def check_sock_cmd(cmd, data)

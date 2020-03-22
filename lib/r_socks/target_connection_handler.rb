@@ -3,16 +3,24 @@ require 'eventmachine'
 module RSocks
   class TargetConnectionHandler < EM::Connection
 
-    def source_io=(io)
-      @source_io = io
+    def initialize(client, request)
+      @client, @request = client, request
     end
 
-    def receive_data(data)
-      @source_io.send_data(data)
+    def post_init
+      EM::enable_proxy(self, @client)
+    end
+
+    def connection_completed
+      send_data @request
+    end
+
+    def proxy_target_unbound
+      close_connection
     end
 
     def unbind
-      @source_io.close_connection
+      @client.close_connection_after_writing
     end
   end
 end
