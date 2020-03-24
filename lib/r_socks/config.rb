@@ -26,5 +26,13 @@ module RSocks
     def auth_method
       @store[:auth_method]
     end
+
+    def proxy_buffer_size
+      @store[:proxy_buffer_size] ||  1024 * 1024 * 10
+    end
+
+    def proxy_buffer_size=(value)
+      @store[:proxy_buffer_size] = value.to_i
+    end
   end
 end

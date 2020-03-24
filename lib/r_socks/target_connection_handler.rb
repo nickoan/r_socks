@@ -3,9 +3,10 @@ require 'eventmachine'
 module RSocks
   class TargetConnectionHandler < EM::Connection
 
-    def initialize(client, data)
+    def initialize(client, config, data)
       @client = client
       @init_data = data
+      @config = config
     end
 
     def post_init
