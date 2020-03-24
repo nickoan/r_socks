@@ -61,10 +61,10 @@ module RSocks
         return send_data(not_accept) unless @state_machine.start?
 
         if @target.nil?
-          @target = EventMachine.connect(@addr, @port, RSocks::TargetConnectionHandler, self)
+          @target = EventMachine.connect(@addr, @port, RSocks::TargetConnectionHandler, self, data)
         end
 
-        @target.send_data(data)
+        proxy_incoming_to(@target,60000)
       rescue => error
         puts "Error at #{@ip}:#{@port}, message: #{data}, error: #{error.message}"
         puts error.backtrace
@@ -72,7 +72,12 @@ module RSocks
     end
 
     def unbind
-      @target.close_connection if @target
+      stop_proxying
+      @target.close_connection_after_writing if @target
+    end
+
+    def proxy_target_unbound
+      close_connection
     end
 
     private
