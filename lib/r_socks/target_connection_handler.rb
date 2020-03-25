@@ -10,7 +10,7 @@ module RSocks
     end
 
     def post_init
-      proxy_incoming_to(@client,60000)
+      proxy_incoming_to(@client, @config.proxy_buffer_size)
     end
 
     def connection_completed
