@@ -1,11 +1,11 @@
 require 'eventmachine'
+require 'r_socks/http_proxy_response_codes'
 
 module RSocks
   class TargetConnectionHandler < EM::Connection
 
-    def initialize(client, config, data)
+    def initialize(client, config)
       @client = client
-      @init_data = data
       @config = config
     end
 
@@ -13,9 +13,8 @@ module RSocks
       proxy_incoming_to(@client, @config.proxy_buffer_size)
     end
 
-    def connection_completed
-      send_data @init_data
-      @init_data = nil
+    def receive_data(data)
+      @client.send_data(data)
     end
 
     def proxy_target_unbound

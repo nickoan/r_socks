@@ -5,7 +5,7 @@ module RSocks
     def initialize(adaptor = nil)
       @default_user = ENV['RSOCKS_USER'] || 'default'
       @default_password = ENV['RSOCKS_PASSWORD'] || 'default'
-      @adaptor = nil
+      @adaptor = adaptor
     end
 
     def auth!(data)

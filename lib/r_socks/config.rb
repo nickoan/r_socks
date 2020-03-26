@@ -14,17 +14,16 @@ module RSocks
 
     def auth_method=(method)
       if method == :no_auth
-        @store[:auth_method] = RSocks::NO_AUTH
+        @store[:auth_method] = :no_auth
       elsif method == :password
-        @store[:auth_method] = RSocks::PASSWORD_LOGIN
-
+        @store[:auth_method] = :auth_method
       else
         raise Error, "unknown auth method #{method}"
       end
     end
 
     def auth_method
-      @store[:auth_method]
+      @store[:auth_method] || :password
     end
 
     def proxy_buffer_size
