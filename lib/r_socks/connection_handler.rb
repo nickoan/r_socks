@@ -4,6 +4,7 @@ require 'socket'
 require 'r_socks/http_proxy_response_codes'
 require 'r_socks/http_proxy_parser'
 require 'r_socks/target_connection_handler'
+require 'r_socks/socks5_proxy_parser'
 
 module RSocks
 
@@ -12,10 +13,8 @@ module RSocks
     def initialize(config, *args)
       super(*args)
       @state_machine = RSocks::StateMachine.new
-      @original_addr = nil
-      @original_port = nil
-      # @authenticator = RSocks::Authenticator.new(config.auth_adaptor)
       @config = config
+      @parser = create_proxy_parser
     end
 
     def post_init
@@ -26,32 +25,31 @@ module RSocks
         close_connection
       end
     end
-    # sample \x05\x01\x00\x03\ngoogle.com\x00P
 
     def receive_data(data)
 
       return send_data(not_accept) if data.nil? || data == ''
 
       begin
+        begin
+          @addr, @port = parser.call(data)
+        rescue RSocks::HttpAuthFailed, RSocks::HttpNotSupport
+          send_data(RSocks::HttpProxyResponseCodes::FAILED_AUTH)
+          close_connection_after_writing
+        rescue RSocks::NotSupport
+          send_data(RSocks::FAILED_RESPONSE)
+          close_connection_after_writing
+        end
 
-        if !@state_machine.start?
+        return unless @state_machine.start?
 
-          parser = RSocks::HttpProxyParser.new(@state_machine, @config)
-
-          begin
-            @addr, @port = parser.call(data)
-          rescue
-            send_data(RSocks::HttpProxyResponseCodes::FAILED_AUTH)
-            close_connection_after_writing
-          end
-
-          return unless @state_machine.start?
-
-          if @target.nil?
-            @target = EventMachine.connect(@addr, @port, RSocks::TargetConnectionHandler, self, @config)
+        if @target.nil?
+          @target = EventMachine.connect(@addr, @port, RSocks::TargetConnectionHandler, self, @config)
+          if @config.proxy_type == :http
             send_data(RSocks::HttpProxyResponseCodes::SUCCESS)
           end
         end
+
         proxy_incoming_to(@target, @config.proxy_buffer_size)
       rescue => error
         puts "Error at #{@ip}:#{@port}, message: #{data}, error: #{error.message}"
@@ -67,5 +65,18 @@ module RSocks
     def proxy_target_unbound
       close_connection
     end
+
+    private
+
+    def create_proxy_parser
+      if @config.proxy_type == :http
+        @parser = RSocks::HttpProxyParser.new(@state_machine, @config)
+      end
+
+      if @config.proxy_type == :socks5
+        @parser = RSocks::Socks5ProxyParser.new(@state_machine, @config, self)
+      end
+    end
+
   end
 end

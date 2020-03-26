@@ -4,6 +4,7 @@ require 'r_socks/socks5_bit_codes'
 require 'r_socks/state_machine'
 require 'r_socks/target_connection_handler'
 require 'r_socks/authenticator'
+require 'r_socks/socks5_proxy_parser'
 
 module RSocks
   class Socks5ProxyParser
@@ -12,6 +13,9 @@ module RSocks
       @auth_method = config.auth_method
       @default_user = ENV['RSOCKS_USER'] || 'default'
       @default_password = ENV['RSOCKS_PASSWORD'] || 'default'
+      @authenticator = RSocks::Authenticator.new(config.auth_adaptor)
+      @original_addr = nil
+      @original_port = nil
       @adaptor = config.auth_adaptor
       @client = client
     end
@@ -19,7 +23,8 @@ module RSocks
 
     def call(data)
       if @state_machine.handshake?
-        return init_handshake(data)
+        init_handshake(data)
+        return
       end
 
       if @state_machine.auth?
@@ -40,6 +45,7 @@ module RSocks
       end
 
       return send_data(not_accept) unless @state_machine.start?
+      [@addr, @host]
     end
 
     private
@@ -158,6 +164,10 @@ module RSocks
 
     def send_data(data)
       @client.send_data(data)
+    end
+
+    def close_connection
+      @client.close_connection_after_writing
     end
   end
 end

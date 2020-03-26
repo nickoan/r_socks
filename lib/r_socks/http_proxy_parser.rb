@@ -37,7 +37,7 @@ module RSocks
         str = Base64.decode64(token)
         @user, @password = str.split(':')
       rescue
-        raise NotSupport, "token parse failed #{token}"
+        raise RSocks::HttpNotSupport, "token parse failed #{token}"
       end
 
       if @adaptor
@@ -49,7 +49,7 @@ module RSocks
 
     def host_format_checking(data)
       temp = data.split("\s")
-      raise NotSupport if temp[0] != 'CONNECT'
+      raise RSocks::HttpNotSupport if temp[0] != 'CONNECT'
       @schema_parse = URI("tcp://#{temp[1]}/")
     end
 

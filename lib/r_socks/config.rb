@@ -26,6 +26,19 @@ module RSocks
       @store[:auth_method] || :password
     end
 
+    def proxy_type=(type)
+      if type == :http
+        @store[:proxy_type] = :http
+
+      elsif type == :socks5
+        @store[:proxy_type] = :socks5
+      end
+    end
+
+    def proxy_type
+      @store[:proxy_type] || :socks5
+    end
+
     def proxy_buffer_size
       @store[:proxy_buffer_size] ||  1024 * 1024 * 10
     end
