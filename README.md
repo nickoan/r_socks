@@ -40,6 +40,7 @@ require 'r_socks'
 server = RSocks::TcpServer.new('127.0.0.1', 8081)
 
 server.config.auth_method = :password
+server.config.proxy_type = :http # default proxy_type = socks5
 
 server.run!
 ```
