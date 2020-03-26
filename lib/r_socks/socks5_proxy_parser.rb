@@ -16,6 +16,7 @@ module RSocks
       @authenticator = RSocks::Authenticator.new(config.auth_adaptor)
       @original_addr = nil
       @original_port = nil
+      @config = config
       @adaptor = config.auth_adaptor
       @client = client
     end
@@ -41,11 +42,10 @@ module RSocks
 
       if @state_machine.connect?
         connect_request(data)
-        return
+        return [@addr, @port]
       end
 
       return send_data(not_accept) unless @state_machine.start?
-      [@addr, @host]
     end
 
     private
@@ -65,7 +65,8 @@ module RSocks
 
       data = nil
 
-      auth_method = @config.auth_method || RSocks::NO_AUTH
+
+      auth_method = @config.auth_method == :password ? PASSWORD_LOGIN : RSocks::NO_AUTH
 
       if methods.include?(auth_method)
 

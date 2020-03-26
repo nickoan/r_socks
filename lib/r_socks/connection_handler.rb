@@ -32,7 +32,7 @@ module RSocks
 
       begin
         begin
-          @addr, @port = parser.call(data)
+          @addr, @port = @parser.call(data)
         rescue RSocks::HttpAuthFailed, RSocks::HttpNotSupport
           send_data(RSocks::HttpProxyResponseCodes::FAILED_AUTH)
           close_connection_after_writing
@@ -70,11 +70,11 @@ module RSocks
 
     def create_proxy_parser
       if @config.proxy_type == :http
-        @parser = RSocks::HttpProxyParser.new(@state_machine, @config)
+        return RSocks::HttpProxyParser.new(@state_machine, @config)
       end
 
       if @config.proxy_type == :socks5
-        @parser = RSocks::Socks5ProxyParser.new(@state_machine, @config, self)
+        return RSocks::Socks5ProxyParser.new(@state_machine, @config, self)
       end
     end
 

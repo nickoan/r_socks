@@ -16,7 +16,7 @@ module RSocks
       if method == :no_auth
         @store[:auth_method] = :no_auth
       elsif method == :password
-        @store[:auth_method] = :auth_method
+        @store[:auth_method] = :password
       else
         raise Error, "unknown auth method #{method}"
       end
