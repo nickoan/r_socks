@@ -31,7 +31,7 @@ module RSocks
     end
 
     def auth_user
-      temp = @header['Proxy-Authorization']
+      temp = @header['proxy-authorization']
       pattern = /^Basic /
       token = temp.gsub(pattern, '')
       begin
@@ -60,7 +60,7 @@ module RSocks
       arr.each do |val|
         name, value = val.split(':')
         next if name.nil?
-        header[name.strip] = value&.strip
+        header[name.strip.downcase] = value&.strip
       end
       @header = header
     end

@@ -49,12 +49,7 @@ module RSocks
 
         if @target.nil?
           @target = EventMachine.connect(@addr, @port, RSocks::TargetConnectionHandler, self, @config)
-          if @config.proxy_type == :http
-            send_data(RSocks::HttpProxyResponseCodes::SUCCESS)
-          end
         end
-
-        proxy_incoming_to(@target, @config.proxy_buffer_size)
       rescue => error
         puts "Error at #{@ip}:#{@port}, message: #{data}, error: #{error.message}"
         puts error.backtrace
