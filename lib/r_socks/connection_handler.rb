@@ -39,6 +39,10 @@ module RSocks
         rescue RSocks::NotSupport
           send_data(RSocks::FAILED_RESPONSE)
           close_connection_after_writing
+
+        rescue RSocks::HealthChecking
+          send_data(RSocks::HttpProxyResponseCodes::SUCCESS)
+          close_connection_after_writing
         end
 
         return unless @state_machine.start?

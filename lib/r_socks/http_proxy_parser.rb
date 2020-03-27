@@ -9,6 +9,7 @@ module RSocks
       @default_user = ENV['RSOCKS_USER'] || 'default'
       @default_password = ENV['RSOCKS_PASSWORD'] || 'default'
       @adaptor = config.auth_adaptor
+      @health_check_route = config.health_check_route
     end
 
     def call(data)
@@ -49,6 +50,7 @@ module RSocks
 
     def host_format_checking(data)
       temp = data.split("\s")
+      health_check_request(temp)
       raise RSocks::HttpNotSupport if temp[0] != 'CONNECT'
       @schema_parse = URI("tcp://#{temp[1]}/")
     end
@@ -61,6 +63,10 @@ module RSocks
         header[name.strip] = value&.strip
       end
       @header = header
+    end
+
+    def health_check_request(arr_data)
+      raise RSocks::HealthChecking if arr_data[0] == 'GET' && @health_check_route == arr_data[1]
     end
   end
 end

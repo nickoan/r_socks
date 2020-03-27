@@ -46,5 +46,13 @@ module RSocks
     def proxy_buffer_size=(value)
       @store[:proxy_buffer_size] = value.to_i
     end
+
+    def health_check_route=(str)
+      @store[:health_check_route] = str;
+    end
+
+    def health_check_route
+      @store[:health_check_route] || '/health'
+    end
   end
 end
