@@ -54,5 +54,29 @@ module RSocks
     def health_check_route
       @store[:health_check_route] || '/health'
     end
+
+    def ssl_private_key=(value)
+      @store[:ssl_private_key] = value
+    end
+
+    def ssl_private_key
+      @store[:ssl_private_key]
+    end
+
+    def ssl_cert=(value)
+      @store[:ssl_cert] = value
+    end
+
+    def ssl_cert
+      @store[:ssl_cert]
+    end
+
+    def enable_ssl=(value)
+      @store[:enable_ssl] = value
+    end
+
+    def enable_ssl?
+      !!@store[:enable_ssl]
+    end
   end
 end

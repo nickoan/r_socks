@@ -19,6 +19,12 @@ module RSocks
 
     def post_init
       begin
+        if @config.enable_ssl?
+          start_tls(
+            private_key_file: @config.ssl_private_key,
+            cert_chain_file: @config.ssl_cert
+          )
+        end
         @port, @ip = Socket.unpack_sockaddr_in(get_peername)
       rescue => e
         puts "post_init error: #{e.message}"
