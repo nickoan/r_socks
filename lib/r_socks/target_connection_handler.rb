@@ -10,8 +10,6 @@ module RSocks
     end
 
     def connection_completed
-      port, ip = Socket.unpack_sockaddr_in(get_peername)
-      puts "success connected to #{ip}:#{port}"
       if @config.proxy_type == :http
         @client.send_data(RSocks::HttpProxyResponseCodes::SUCCESS)
       end

@@ -78,5 +78,13 @@ module RSocks
     def enable_ssl?
       !!@store[:enable_ssl]
     end
+
+    def instances=(number)
+      @store[:instance] = number
+    end
+
+    def instances
+      @store[:instance] || 1
+    end
   end
 end
