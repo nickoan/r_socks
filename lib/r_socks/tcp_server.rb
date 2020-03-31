@@ -43,10 +43,12 @@ module RSocks
     def spawn_process(number)
 
       server = TCPServer.new(@host, @port)
+      pids = []
 
       number.times do |i|
-        Process.fork do
+        pids << Process.fork do
           puts "start r_socks instance @#{i}"
+          Signal.trap("TERM") { exit! }
           begin
             attach_and_start_server(server)
           rescue Interrupt
@@ -57,7 +59,20 @@ module RSocks
         end
       end
 
+      # if main process run in backgourd and has been killed
+      # then all sub-process should term
+      at_exit do
+        term_all_sub_process(pids)
+      end
+
       Process.waitall
+    end
+
+    def term_all_sub_process(pids)
+      pids.each do |id|
+        next unless id
+        Process.kill("TERM", id)
+      end
     end
   end
 end
