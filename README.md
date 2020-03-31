@@ -1,8 +1,6 @@
 # RSocks
 
-this is a socks5 server base on Eventmachine.
 
-can be using as socks5 proxy server side.
 
 ## Installation
 
