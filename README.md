@@ -1,8 +1,8 @@
 # RSocks
 
-this is a socks5 server base on Eventmachine.
+an proxy server base on EventMachine.
 
-can be using as socks5 proxy server side.
+protocol type support: http, https, socks5
 
 ## Installation
 
