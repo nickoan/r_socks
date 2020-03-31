@@ -1,6 +1,8 @@
 # RSocks
 
+an proxy server base on EventMachine.
 
+protocol type support: http, https, socks5
 
 ## Installation
 
