@@ -86,5 +86,13 @@ module RSocks
     def instances
       @store[:instance] || 1
     end
+
+    def unbind_handler=(obj)
+      @store[:unbind_handler] = obj
+    end
+
+    def unbind_handler
+      @store[:unbind_handler]
+    end
   end
 end

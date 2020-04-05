@@ -64,7 +64,12 @@ module RSocks
 
     def unbind
       stop_proxying
+
       @target.close_connection_after_writing if @target
+
+      if @config.unbind_handler
+        @config.unbind_handler.call(get_proxied_bytes)
+      end
     end
 
     def proxy_target_unbound

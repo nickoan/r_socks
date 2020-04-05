@@ -27,6 +27,9 @@ module RSocks
 
     def unbind
       @client.close_connection_after_writing
+      if @config.unbind_handler
+        @config.unbind_handler.call(get_proxied_bytes)
+      end
     end
   end
 end
