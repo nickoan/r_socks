@@ -53,8 +53,11 @@ module RSocks
 
         return unless @state_machine.start?
 
+        @username = @parser.username
+        @password = @parser.password
         if @target.nil?
           @target = EventMachine.connect(@addr, @port, RSocks::TargetConnectionHandler, self, @config)
+          @target.assign_user_and_password(@username, @password)
         end
       rescue => error
         puts "Error at #{@ip}:#{@port}, message: #{data}, error: #{error.message}"
@@ -68,7 +71,7 @@ module RSocks
       @target.close_connection_after_writing if @target
 
       if @config.unbind_handler
-        @config.unbind_handler.call(get_proxied_bytes)
+        @config.unbind_handler.call(get_proxied_bytes, @username, @password)
       end
     end
 

@@ -2,6 +2,8 @@ module RSocks
 
   class Authenticator
 
+    attr_reader :username, :password
+
     def initialize(adaptor = nil)
       @default_user = ENV['RSOCKS_USER'] || 'default'
       @default_password = ENV['RSOCKS_PASSWORD'] || 'default'
@@ -16,13 +18,13 @@ module RSocks
     private
 
     def validate(data)
-      username, remain = get_username(data)
-      password = get_password(remain)
+      @username, remain = get_username(data)
+      @password = get_password(remain)
 
       if @adaptor.nil?
-        username == @default_user && password == @default_password
+        @username == @default_user && @password == @default_password
       else
-        @adaptor.call(username, password)
+        @adaptor.call(@username, @password)
       end
     end
 

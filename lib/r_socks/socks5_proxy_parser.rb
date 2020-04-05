@@ -8,6 +8,9 @@ require 'r_socks/socks5_proxy_parser'
 
 module RSocks
   class Socks5ProxyParser
+
+    attr_reader :username, :password
+
     def initialize(state_machine, config, client)
       @state_machine = state_machine
       @auth_method = config.auth_method
@@ -42,6 +45,8 @@ module RSocks
 
       if @state_machine.connect?
         connect_request(data)
+        @username = @authenticator.username
+        @password = @authenticator.password
         return [@addr, @port]
       end
 

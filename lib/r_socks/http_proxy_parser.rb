@@ -3,6 +3,8 @@ require 'base64'
 module RSocks
   class HttpProxyParser
 
+    attr_reader :username, :password
+
     def initialize(state_machine, config)
       @state_machine = state_machine
       @auth_method = config.auth_method
@@ -36,15 +38,15 @@ module RSocks
       token = temp.gsub(pattern, '')
       begin
         str = Base64.decode64(token)
-        @user, @password = str.split(':')
+        @username, @password = str.split(':')
       rescue
         raise RSocks::HttpNotSupport, "token parse failed #{token}"
       end
 
       if @adaptor
-        return @adaptor.call(@user, @password)
+        return @adaptor.call(@username, @password)
       else
-        return @password == @default_password && @user == @default_user
+        return @password == @default_password && @username == @default_user
       end
     end
 

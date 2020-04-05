@@ -9,6 +9,11 @@ module RSocks
       @config = config
     end
 
+    def assign_user_and_password(username, password)
+      @username = username
+      @password = password
+    end
+
     def connection_completed
       if @config.proxy_type == :http
         @client.send_data(RSocks::HttpProxyResponseCodes::SUCCESS)
@@ -28,7 +33,7 @@ module RSocks
     def unbind
       @client.close_connection_after_writing
       if @config.unbind_handler
-        @config.unbind_handler.call(get_proxied_bytes)
+        @config.unbind_handler.call(get_proxied_bytes, @username, @password)
       end
     end
   end
