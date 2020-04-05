@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.licenses      = ['Apache-2.0']
 
   spec.summary       = %q{socks5 proxy server}
-  spec.description   = %q{ruby proxy socks5 shadowsocks}
+  spec.description   = %q{ruby socks5 and http proxy}
   spec.homepage      = "https://github.com/nickoan/r_socks"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
