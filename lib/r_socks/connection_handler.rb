@@ -26,6 +26,11 @@ module RSocks
           )
         end
         @port, @ip = Socket.unpack_sockaddr_in(get_peername)
+
+        white_list = @config.forward_white_list
+        if !white_list.empty? && !white_list.include?(@ip.to_s)
+          raise Error, "#{@ip} not in white list"
+        end
       rescue => e
         puts "post_init error: #{e.message}"
         close_connection

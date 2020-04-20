@@ -12,6 +12,7 @@ module RSocks
       @default_password = ENV['RSOCKS_PASSWORD'] || 'default'
       @adaptor = config.auth_adaptor
       @health_check_route = config.health_check_route
+      @need_auth = config.auth_method == :no_auth
     end
 
     def call(data)
@@ -27,9 +28,13 @@ module RSocks
       host_format_checking(temp.shift)
       generate_header(temp)
 
-      state = auth_user
-      raise RSocks::HttpAuthFailed unless state
-      state
+      if @need_auth
+        state = auth_user
+        raise RSocks::HttpAuthFailed unless state
+        return state
+      end
+
+      true
     end
 
     def auth_user

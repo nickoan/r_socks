@@ -118,5 +118,13 @@ module RSocks
     def forward_addr=(value)
       @store[:forward_addr] = value.to_s
     end
+
+    def forward_white_list=(arr)
+      @store[:white_list] = arr
+    end
+
+    def forward_white_list
+      @store[:white_list] || []
+    end
   end
 end
