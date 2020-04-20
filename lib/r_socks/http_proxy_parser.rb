@@ -12,7 +12,7 @@ module RSocks
       @default_password = ENV['RSOCKS_PASSWORD'] || 'default'
       @adaptor = config.auth_adaptor
       @health_check_route = config.health_check_route
-      @need_auth = config.auth_method == :no_auth
+      @need_auth = config.auth_method != :no_auth
     end
 
     def call(data)
