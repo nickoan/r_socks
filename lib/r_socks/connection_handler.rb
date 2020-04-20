@@ -53,6 +53,16 @@ module RSocks
 
         return unless @state_machine.start?
 
+        if @config.forward_server? && @config.proxy_type == :http
+          @target = EventMachine.connect(@config.forward_addr,
+                                         @config.forward_port,
+                                         RSocks::TargetConnectionHandler,
+                                         self,
+                                         @config,
+                                         data)
+          @target.assign_user_and_password(@username, @password)
+        end
+
         @username = @parser.username
         @password = @parser.password
         if @target.nil?
@@ -80,6 +90,11 @@ module RSocks
     end
 
     private
+
+    def forward_request
+      @port = @config.forward_port
+      @addr = @config.forward_addr
+    end
 
     def create_proxy_parser
       if @config.proxy_type == :http

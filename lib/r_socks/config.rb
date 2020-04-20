@@ -94,5 +94,29 @@ module RSocks
     def unbind_handler
       @store[:unbind_handler]
     end
+
+    def forward_server?
+      @store[:forward_server] || false
+    end
+
+    def forward_server=(value)
+      @store[:forward_server] = value
+    end
+
+    def forward_port
+      @store[:forward_port]
+    end
+
+    def forward_addr
+      @store[:forward_addr]
+    end
+
+    def forward_port=(value)
+      @store[:forward_port] = value.to_i
+    end
+
+    def forward_addr=(value)
+      @store[:forward_addr] = value.to_s
+    end
   end
 end
