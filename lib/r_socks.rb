@@ -1,3 +1,4 @@
+require 'r_socks/cache_pool'
 require 'r_socks/state_machine'
 require 'r_socks/config'
 require 'r_socks/http_proxy_response_codes'

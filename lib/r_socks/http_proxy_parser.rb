@@ -24,6 +24,7 @@ module RSocks
     private
 
     def parser_connect_http(data)
+      raise RSocks::HttpNotSupport unless check_is_valid_request(data[0...8])
       temp = data.split("\r\n")
       host_format_checking(temp.shift)
       generate_header(temp)
@@ -74,6 +75,12 @@ module RSocks
 
     def health_check_request(arr_data)
       raise RSocks::HealthChecking if arr_data[0] == 'GET' && @health_check_route == arr_data[1]
+    end
+
+    private
+
+    def check_is_valid_request(s)
+      s[0...4] == "GET\s" || s == "CONNECT\s"
     end
   end
 end
