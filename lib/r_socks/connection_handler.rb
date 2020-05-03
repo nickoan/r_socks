@@ -91,7 +91,6 @@ module RSocks
       EventMachine.cancel_timer(@timer) if @timer
 
       stop_proxying
-
       @target.close_connection_after_writing if @target
 
       if @config.unbind_handler

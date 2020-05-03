@@ -1,4 +1,7 @@
+require 'eventmachine'
 require 'r_socks/cache_pool'
+require 'r_socks/observer_handler'
+require 'r_socks/observer'
 require 'r_socks/state_machine'
 require 'r_socks/config'
 require 'r_socks/http_proxy_response_codes'

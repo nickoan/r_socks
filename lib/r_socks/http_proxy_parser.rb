@@ -13,6 +13,7 @@ module RSocks
       @adaptor = config.auth_adaptor
       @health_check_route = config.health_check_route
       @need_auth = config.auth_method != :no_auth
+      @max_connection_size = 4000
     end
 
     def call(data)
@@ -24,7 +25,9 @@ module RSocks
     private
 
     def parser_connect_http(data)
-      raise RSocks::HttpNotSupport unless check_is_valid_request(data[0...8])
+      size_of_data = data.bytesize
+      raise RSocks::HttpNotSupport unless
+        size_of_data <= @max_connection_size && check_is_valid_request(data[0...8])
       temp = data.split("\r\n")
       host_format_checking(temp.shift)
       generate_header(temp)

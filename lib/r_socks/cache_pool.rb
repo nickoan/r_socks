@@ -6,7 +6,12 @@ module RSocks
       @pool = {}
     end
 
-    def add(key, value)
+    def get(key)
+      @pool[key]
+    end
+
+    def add_object(key, value)
+      value['time'] = Time.now.to_i
       @mutex.synchronize do
         @pool[key] = value
       end
@@ -18,11 +23,10 @@ module RSocks
       end
     end
 
-    def del_with_condition(&blk)
+    def clear_with_time(time)
       @mutex.synchronize do
         @pool.each do |k, v|
-          result = blk.call(v)
-          @pool.delete(k) if result
+          @pool.delete(k) if v['time'] < time
         end
       end
     end

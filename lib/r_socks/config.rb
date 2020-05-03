@@ -126,5 +126,15 @@ module RSocks
     def forward_white_list
       @store[:white_list] || []
     end
+
+    # try make an unique name if you share some
+    # db or resource between different proxy server
+    def server_name=(value)
+      @store[:server_name] = value
+    end
+
+    def server_name
+      @store[:server_name] || ''
+    end
   end
 end
