@@ -15,6 +15,7 @@ module RSocks
       @state_machine = RSocks::StateMachine.new
       @config = config
       @parser = create_proxy_parser
+      @force_expire = 20 # seconds
     end
 
     def post_init
@@ -30,6 +31,11 @@ module RSocks
         white_list = @config.forward_white_list
         if !white_list.empty? && !white_list.include?(@ip.to_s)
           raise Error, "#{@ip} not in white list"
+        end
+
+        @timer = EventMachine.add_timer(20) do
+          self.close_connection(false)
+          @timer = nil
         end
       rescue => e
         puts "post_init error: #{e.message}"
@@ -81,6 +87,9 @@ module RSocks
     end
 
     def unbind
+
+      EventMachine.cancel_timer(@timer) if @timer
+
       stop_proxying
 
       @target.close_connection_after_writing if @target

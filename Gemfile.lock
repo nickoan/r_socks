@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    r_socks (0.2.8)
+    r_socks (0.2.11)
       eventmachine (~> 1.2, >= 1.2.7)
 
 GEM
