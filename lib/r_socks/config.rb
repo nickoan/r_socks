@@ -136,5 +136,21 @@ module RSocks
     def server_name
       @store[:server_name] || ''
     end
+
+    def usage_threshold
+      @store[:usage_threshold] || 1 * 1024 * 1024 * 1024
+    end
+
+    def usage_threshold=(value)
+      @store[:usage_threshold] = value
+    end
+
+    def callback_url
+      @store[:callback_url]
+    end
+
+    def callback_url=(value)
+      @store[:callback_url] = value
+    end
   end
 end
