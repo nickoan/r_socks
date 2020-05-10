@@ -1,12 +1,7 @@
 # RSocks
+#### project move not maintain anymore
 
-an proxy server base on EventMachine.
-
-protocol type support: http, https, socks5
-
-if you'd like to using only http and https proxy
-
-please check [r_proxy](https://github.com/nickoan/r_proxy)
+#### please check [r_proxy](https://github.com/nickoan/r_proxy)
 
 ## Installation
 
