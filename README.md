@@ -1,7 +1,7 @@
 # RSocks
-#### project move not maintain anymore
+#### project not maintain anymore
 
-#### please check [r_proxy](https://github.com/nickoan/r_proxy)
+#### for https and http proxy please check with [r_proxy](https://github.com/nickoan/r_proxy)
 
 ## Installation
 
